@@ -6,6 +6,7 @@ import request from "supertest";
 import { createApp } from "../src/app.js";
 import { Resident } from "../src/models/Resident.js";
 import { ResidentValidator } from "../src/services/ResidentValidator.js";
+import { makeValidResident } from "../src/utils/testUtils.js";
 
 const app = createApp();
 
@@ -121,18 +122,6 @@ test("resident defaults to null id before persistence", () => {
 
   assert.equal(resident.id, null);
 });
-
-function makeValidResident(overrides = {}) {
-  return new Resident({
-    firstName: "Juan",
-    lastName: "Dela Cruz",
-    address: "Barangay Santo Tomas",
-    contactNumber: "09171234567",
-    email: "juan@example.com",
-    status: "Active",
-    ...overrides
-  });
-}
 
 test("valid resident information passes validation", () => {
   const resident = makeValidResident();
