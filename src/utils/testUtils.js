@@ -13,3 +13,14 @@ export function makeValidResident(overrides = {}) {
     ...overrides
   });
 }
+
+// from T04 Testing
+export function makeResidentWithMissingFirstName() {
+  return new Resident({
+    firstName: "",
+    lastName: "Dela Cruz",
+    address: "Barangay Santo Tomas",
+    contactNumber: "09171234567",
+    email: "juan@example.com"
+  });
+}
