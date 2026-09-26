@@ -1,9 +1,15 @@
+import { openDatabase } from "../database/connection.js";
 import { Resident } from "../models/Resident.js";
 
 export class ResidentRepository {
-  constructor(db) {
-    this.db = db;
+  // opens its own connection; omitting dbPath falls back to the default database
+  constructor(dbPath) {
+    this.db = openDatabase(dbPath);
     this.initialize();
+  }
+
+  close() {
+    this.db.close();
   }
 
   // no need to call this method outside the class; its in the constructor

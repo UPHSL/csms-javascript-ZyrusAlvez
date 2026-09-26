@@ -4,24 +4,19 @@ import os from "node:os";
 import path from "node:path";
 import test from "node:test";
 
-import { openDatabase } from "../src/database/connection.js";
 import { Resident } from "../src/models/Resident.js";
 import { ResidentRepository } from "../src/repositories/ResidentRepository.js";
 import { makeValidResident } from "../src/utils/testUtils.js";
 
-// helper function to open a connection and create a repository using the default database
+// helper function to create a repository using the default database
 function createTestRepository() {
-  const db = openDatabase();
-  const repository = new ResidentRepository(db);
-
-  // return the repository to use its methods, and the db to close it after using it
-  return { repository, db };
+  return new ResidentRepository();
 }
 
 // Required Test 1 - Persist a Resident
 test("persist a resident", (t) => {
-  const { repository, db } = createTestRepository();
-  t.after(() => { db.close()});
+  const repository = createTestRepository();
+  t.after(() => { repository.close()});
 
   const resident = makeValidResident();
   const saved = repository.save(resident);
@@ -33,8 +28,8 @@ test("persist a resident", (t) => {
 
 // Required Test 2 - Resident Receives an Identifier
 test("resident receives an identifier after saving", (t) => {
-  const { repository, db } = createTestRepository();
-  t.after(() => { db.close()});
+  const repository = createTestRepository();
+  t.after(() => { repository.close()});
 
   const resident = makeValidResident();
 
@@ -48,8 +43,8 @@ test("resident receives an identifier after saving", (t) => {
 
 // Required Test 3 - Retrieve Resident by Identifier
 test("retrieve resident by identifier", (t) => {
-  const { repository, db } = createTestRepository();
-  t.after(() => { db.close()});
+  const repository = createTestRepository();
+  t.after(() => { repository.close()});
 
   const saved = repository.save(makeValidResident());
   const found = repository.findById(saved.id);
@@ -60,8 +55,8 @@ test("retrieve resident by identifier", (t) => {
 
 // Required Test 4 - Preserve Resident Information
 test("preserve resident information after save and retrieval", (t) => {
-  const { repository, db } = createTestRepository();
-  t.after(() => { db.close()});
+  const repository = createTestRepository();
+  t.after(() => { repository.close()});
 
   const resident = makeValidResident({
     firstName: "Maria",
@@ -85,8 +80,8 @@ test("preserve resident information after save and retrieval", (t) => {
 
 // Required Test 5 - Preserve Active Status
 test("preserve active status after persistence", (t) => {
-  const { repository, db } = createTestRepository();
-  t.after(() => { db.close()});
+  const repository = createTestRepository();
+  t.after(() => { repository.close()});
 
   const resident = makeValidResident({ status: "Active" });
   const saved = repository.save(resident);
@@ -97,8 +92,8 @@ test("preserve active status after persistence", (t) => {
 
 // Required Test 6 - Missing Resident
 test("findById returns null for missing resident", (t) => {
-  const { repository, db } = createTestRepository();
-  t.after(() => { db.close()});
+  const repository = createTestRepository();
+  t.after(() => { repository.close()});
 
   const found = repository.findById(9999999999); // using a very large number to ensure it doesn't exist
 
@@ -111,8 +106,7 @@ test("verify real persistence across repository instances", (t) => {
   // creates a unique temp file path; the OS cleans up /tmp/ automatically
   const dbPath = path.join(os.tmpdir(), `csms-test-${Date.now()}-${Math.random().toString(36).slice(2)}.db`);
 
-  const firstDb = openDatabase(dbPath);
-  const firstRepository = new ResidentRepository(firstDb);
+  const firstRepository = new ResidentRepository(dbPath);
 
   const saved = firstRepository.save(makeValidResident({
     firstName: "Zyrus",
@@ -124,10 +118,9 @@ test("verify real persistence across repository instances", (t) => {
   }));
 
   const savedId = saved.id;
-  firstDb.close();
+  firstRepository.close();
 
-  const secondDb = openDatabase(dbPath);
-  const secondRepository = new ResidentRepository(secondDb);
+  const secondRepository = new ResidentRepository(dbPath);
 
   const found = secondRepository.findById(savedId);
 
@@ -140,7 +133,7 @@ test("verify real persistence across repository instances", (t) => {
   assert.equal(found.email, "zyrusalvez13@gmail.com");
   assert.equal(found.status, "Active");
 
-  secondDb.close();
+  secondRepository.close();
 });
 
 // Step 18 - Student-Designed Persistence Test
@@ -148,8 +141,8 @@ test("verify real persistence across repository instances", (t) => {
 // and that earlier records are not overwritten by later ones.
 // This catches defects like ID collisions or if the repository only tracking the last-saved record.
 test("multiple residents receive unique identifiers", (t) => {
-  const { repository, db } = createTestRepository();
-  t.after(() => { db.close()});
+  const repository = createTestRepository();
+  t.after(() => { repository.close()});
 
   const first = repository.save(makeValidResident({
     firstName: "Ether",
