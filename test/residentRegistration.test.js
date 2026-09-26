@@ -12,24 +12,11 @@ import { Resident } from "../src/models/Resident.js";
 import { ResidentValidator } from "../src/services/ResidentValidator.js";
 import { ResidentRepository } from "../src/repositories/ResidentRepository.js";
 import { ResidentRegistrationService } from "../src/services/ResidentRegistrationService.js";
-import { makeValidResident, makeResidentWithMissingFirstName } from "../src/utils/testUtils.js";
 
-function createTemporaryDatabasePath() {
-  const fileName =
-    `csms-t04-${crypto.randomUUID()}.sqlite`;
+import { makeValidResident, makeResidentWithMissingFirstName, createTemporaryDatabasePath, removeDatabase } from "../src/utils/testUtils.js";
 
-  return path.join(
-    os.tmpdir(),
-    fileName
-  );
-}
-
- 
-function removeDatabase(databasePath) {
-  if (fs.existsSync(databasePath)) {
-    fs.unlinkSync(databasePath);
-  }
-}
+// Moved the createTemporaryDatabasePath and removeDatabase functions to src/utils/testUtils.js
+// since they are being used in multiple test files. This is to avoid code duplication and promote reusability.
  
 // for Step 20 - Add a Valid Resident Helper
 // I won't copy it here since it is already in src/utils/testUtils.js so I will just import it from there
