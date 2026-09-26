@@ -61,4 +61,55 @@ export class ResidentRepository {
 
     return this.findById(result.lastInsertRowid);
   }
+
+  findAll() {
+    const statement =
+      this.db.prepare(`
+        SELECT
+          id,
+          first_name,
+          last_name,
+          address,
+          contact_number,
+          email,
+          status
+        FROM residents
+        ORDER BY
+          LOWER(last_name) ASC,
+          LOWER(first_name) ASC,
+          id ASC
+      `);
+
+    const rows = statement.all();
+
+    return rows.map((row) => this.toResident(row));
+  }
+
+  searchByName(searchTerm) {
+    const statement =
+      this.db.prepare(`
+        SELECT
+          id,
+          first_name,
+          last_name,
+          address,
+          contact_number,
+          email,
+          status
+        FROM residents
+        WHERE
+          LOWER(first_name) LIKE LOWER(?)
+          OR LOWER(last_name) LIKE LOWER(?)
+        ORDER BY
+          LOWER(last_name) ASC,
+          LOWER(first_name) ASC,
+          id ASC
+      `);
+
+    const pattern = `%${searchTerm}%`;
+
+    const rows = statement.all(pattern, pattern);
+
+    return rows.map((row) => this.toResident(row));
+  }
 }
