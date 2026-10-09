@@ -81,6 +81,16 @@ export class ResidentRepository {
     return result.changes > 0 ? this.findById(resident.id) : null;
   }
 
+  // soft deactivation: changes only the status of the Resident identified by id;
+  // the row is kept (no DELETE) and no other field is written
+  deactivateById(id) {
+    const result = this.db.prepare(
+      "UPDATE residents SET status = ? WHERE id = ?"
+    ).run("Inactive", id);
+
+    return result.changes > 0 ? this.findById(id) : null;
+  }
+
   findAll() {
     const statement =
       this.db.prepare(`
