@@ -62,6 +62,25 @@ export class ResidentRepository {
     return this.findById(result.lastInsertRowid);
   }
 
+  // modifies only the editable fields of the Resident identified by resident.id;
+  // id and status are never written, and a missing id updates nothing
+  update(resident) {
+    const result = this.db.prepare(
+      `UPDATE residents
+       SET first_name = ?, last_name = ?, address = ?, contact_number = ?, email = ?
+       WHERE id = ?`
+    ).run(
+      resident.firstName,
+      resident.lastName,
+      resident.address,
+      resident.contactNumber,
+      resident.email,
+      resident.id
+    );
+
+    return result.changes > 0 ? this.findById(resident.id) : null;
+  }
+
   findAll() {
     const statement =
       this.db.prepare(`
