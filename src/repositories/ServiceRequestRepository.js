@@ -59,4 +59,14 @@ export class ServiceRequestRepository {
 
     return this.findById(result.lastInsertRowid);
   }
+
+  // persistence only: writes the status of the Service Request identified by id.
+  // The transition rules are decided by ServiceRequestStatusService before this is called.
+  updateStatus(id, status) {
+    const result = this.db.prepare(
+      "UPDATE service_requests SET status = ? WHERE id = ?"
+    ).run(status, id);
+
+    return result.changes > 0 ? this.findById(id) : null;
+  }
 }
