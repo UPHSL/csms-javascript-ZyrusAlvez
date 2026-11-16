@@ -1,0 +1,27 @@
+<%# the five editable Resident fields; id and status are never form inputs %>
+<div>
+  <label class="mb-1 block text-sm font-medium" for="firstName">First Name</label>
+  <input class="input" id="firstName" name="firstName" type="text" required value="<%= values.firstName %>">
+</div>
+
+<div>
+  <label class="mb-1 block text-sm font-medium" for="lastName">Last Name</label>
+  <input class="input" id="lastName" name="lastName" type="text" required value="<%= values.lastName %>">
+</div>
+
+<div class="sm:col-span-2">
+  <label class="mb-1 block text-sm font-medium" for="address">Address</label>
+  <input class="input" id="address" name="address" type="text" required value="<%= values.address %>">
+</div>
+
+<div>
+  <label class="mb-1 block text-sm font-medium" for="contactNumber">Contact Number</label>
+  <input class="input" id="contactNumber" name="contactNumber" type="tel" required
+         inputmode="numeric" aria-describedby="contactNumberHint" value="<%= values.contactNumber %>">
+  <p id="contactNumberHint" class="mt-1 text-xs text-gray-500">Format: 09XXXXXXXXX</p>
+</div>
+
+<div>
+  <label class="mb-1 block text-sm font-medium" for="email">Email</label>
+  <input class="input" id="email" name="email" type="email" required value="<%= values.email %>">
+</div>
