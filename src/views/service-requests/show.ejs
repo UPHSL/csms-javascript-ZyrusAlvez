@@ -1,0 +1,51 @@
+<%- include('../partials/header', { title, section: 'service-requests' }) %>
+
+<p class="mb-4"><a class="text-sm text-blue-700 hover:underline" href="/service-requests">&larr; Back to Service Request Management</a></p>
+
+<%- include('../partials/notice', { notice, error }) %>
+
+<section class="panel max-w-3xl">
+  <div class="mb-5 flex flex-wrap items-center gap-3">
+    <h1 class="text-2xl font-bold">Service Request #<%= serviceRequest.id %></h1>
+    <%- include('../partials/status-badge', { status: serviceRequest.status }) %>
+  </div>
+
+  <dl class="grid gap-4 sm:grid-cols-2 [&_dt]:text-xs [&_dt]:font-semibold [&_dt]:uppercase [&_dt]:text-gray-500">
+    <div>
+      <dt>ID</dt>
+      <dd><%= serviceRequest.id %></dd>
+    </div>
+    <div>
+      <dt>Resident ID</dt>
+      <dd><%= serviceRequest.residentId %></dd>
+    </div>
+    <div>
+      <dt>Service Type</dt>
+      <dd><%= serviceRequest.serviceType %></dd>
+    </div>
+    <div>
+      <dt>Date Requested</dt>
+      <dd><%= serviceRequest.dateRequested %></dd>
+    </div>
+    <div>
+      <dt>Status</dt>
+      <dd><%= serviceRequest.status %></dd>
+    </div>
+    <div class="sm:col-span-2">
+      <dt>Description</dt>
+      <dd class="whitespace-pre-line"><%= serviceRequest.description %></dd>
+    </div>
+  </dl>
+
+  <div class="mt-6 border-t border-gray-200 pt-4">
+    <h2 class="mb-2 text-sm font-semibold uppercase text-gray-500">Workflow</h2>
+    <div class="flex flex-wrap gap-2">
+      <%- include('_actions', { serviceRequest, actions }) %>
+    </div>
+    <% if (actions.length === 0) { %>
+      <p class="mt-2 text-sm text-gray-600"><%= serviceRequest.status %> is a final state. This Service Request stays on record for history.</p>
+    <% } %>
+  </div>
+</section>
+
+<%- include('../partials/footer') %>

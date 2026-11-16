@@ -1,4 +1,5 @@
 import { Resident } from "../models/Resident.js";
+import { parseId, renderNotFound as renderNotFoundPage } from "./controllerHelpers.js";
 
 // the only fields a user may submit; id and status are never read from a form
 const EDITABLE_FIELDS = ["firstName", "lastName", "address", "contactNumber", "email"];
@@ -25,11 +26,6 @@ const NOTICES = {
 
 const EMPTY_FORM = Object.fromEntries(EDITABLE_FIELDS.map((field) => [field, ""]));
 
-// route ids must be positive whole numbers; anything else is treated as not found
-function parseId(value) {
-  return /^[1-9]\d*$/.test(value) ? Number(value) : null;
-}
-
 // copies only the editable fields the form actually sent, as strings
 function readEditableFields(body = {}) {
   const fields = {};
@@ -48,9 +44,12 @@ function toErrorMessages(errors) {
 }
 
 function renderNotFound(response) {
-  response.status(404).render("errors/not-found", {
+  renderNotFoundPage(response, {
     title: "Resident Not Found",
-    message: "The requested Resident does not exist."
+    message: "The requested Resident does not exist.",
+    backHref: "/residents",
+    backLabel: "Back to Resident Management",
+    section: "residents"
   });
 }
 

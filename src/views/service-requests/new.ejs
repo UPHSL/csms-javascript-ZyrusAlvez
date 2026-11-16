@@ -1,0 +1,44 @@
+<%- include('../partials/header', { title, section: 'service-requests' }) %>
+
+<p class="mb-4"><a class="text-sm text-blue-700 hover:underline" href="/service-requests">&larr; Back to Service Request Management</a></p>
+
+<section class="panel max-w-2xl">
+  <h1 class="text-2xl font-bold">Submit Service Request</h1>
+  <p class="mb-5 mt-1 text-sm text-gray-600">New Service Requests start as <strong>Pending</strong>. Only Active Residents can submit requests.</p>
+
+  <%- include('../partials/errors', { errors }) %>
+
+  <form class="grid gap-4 sm:grid-cols-2" method="post" action="/service-requests">
+    <div>
+      <label class="mb-1 block text-sm font-medium" for="residentId">Resident ID</label>
+      <input class="input" id="residentId" name="residentId" type="number" min="1" step="1" required
+             aria-describedby="residentIdHint" value="<%= values.residentId %>">
+      <p id="residentIdHint" class="mt-1 text-xs text-gray-500">
+        Not sure? <a class="text-blue-700 hover:underline" href="/residents" target="_blank" rel="noopener">View Residents</a>
+      </p>
+    </div>
+
+    <div>
+      <label class="mb-1 block text-sm font-medium" for="dateRequested">Date Requested</label>
+      <input class="input" id="dateRequested" name="dateRequested" type="date" required value="<%= values.dateRequested %>">
+    </div>
+
+    <div class="sm:col-span-2">
+      <label class="mb-1 block text-sm font-medium" for="serviceType">Service Type</label>
+      <input class="input" id="serviceType" name="serviceType" type="text" required
+             placeholder="e.g. Barangay Clearance" value="<%= values.serviceType %>">
+    </div>
+
+    <div class="sm:col-span-2">
+      <label class="mb-1 block text-sm font-medium" for="description">Description</label>
+      <textarea class="input" id="description" name="description" rows="4" required><%= values.description %></textarea>
+    </div>
+
+    <div class="flex gap-2 sm:col-span-2">
+      <button class="btn btn-primary" type="submit">Submit Service Request</button>
+      <a class="btn btn-link" href="/service-requests">Cancel</a>
+    </div>
+  </form>
+</section>
+
+<%- include('../partials/footer') %>
