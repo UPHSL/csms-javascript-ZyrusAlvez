@@ -7,6 +7,11 @@ export class ResidentQueryService {
     return this.repository.findAll();
   }
 
+  // one Resident by id through the T03 findById; an unknown id returns null
+  findResident(id) {
+    return this.repository.findById(id);
+  }
+
   searchResidents(searchTerm) {
     const normalizedSearchTerm =
       typeof searchTerm === "string"

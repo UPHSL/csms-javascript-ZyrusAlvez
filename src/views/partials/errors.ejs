@@ -1,0 +1,10 @@
+<% if (errors.length > 0) { %>
+  <div class="mb-5 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-red-800" role="alert">
+    <p class="font-semibold">Please correct the following:</p>
+    <ul class="mt-1 list-disc pl-5 text-sm">
+      <% errors.forEach((message) => { %>
+        <li><%= message %></li>
+      <% }) %>
+    </ul>
+  </div>
+<% } %>

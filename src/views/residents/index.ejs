@@ -1,0 +1,67 @@
+<%- include('../partials/header', { title }) %>
+
+<div class="mb-5 flex flex-wrap items-center justify-between gap-4">
+  <h1 class="text-2xl font-bold">Resident Management</h1>
+  <a class="btn btn-primary" href="/residents/new">Register Resident</a>
+</div>
+
+<% if (notice) { %>
+  <div class="mb-5 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-green-800" role="status"><%= notice %></div>
+<% } %>
+
+<form class="panel mb-5 !p-4" method="get" action="/residents" role="search">
+  <label class="mb-1.5 block text-sm font-semibold" for="search">Search by first or last name</label>
+  <div class="flex flex-wrap gap-2">
+    <input class="input min-w-0 flex-1 basis-64" id="search" name="search" type="search" value="<%= search %>" placeholder="e.g. Santos">
+    <button class="btn" type="submit">Search</button>
+    <% if (search.trim().length > 0) { %>
+      <a class="btn btn-link" href="/residents">Clear</a>
+    <% } %>
+  </div>
+</form>
+
+<% if (residents.length === 0) { %>
+  <p class="rounded-xl border border-dashed border-gray-300 bg-white px-4 py-10 text-center text-gray-500">No Residents found.</p>
+<% } else { %>
+  <div class="overflow-x-auto rounded-xl border border-gray-200 bg-white shadow-sm">
+    <table class="min-w-full divide-y divide-gray-200 text-sm">
+      <thead class="bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-600">
+        <tr>
+          <th scope="col" class="px-4 py-3">ID</th>
+          <th scope="col" class="px-4 py-3">First Name</th>
+          <th scope="col" class="px-4 py-3">Last Name</th>
+          <th scope="col" class="px-4 py-3">Address</th>
+          <th scope="col" class="px-4 py-3">Contact Number</th>
+          <th scope="col" class="px-4 py-3">Email</th>
+          <th scope="col" class="px-4 py-3">Status</th>
+          <th scope="col" class="px-4 py-3">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-100 [&_td]:px-4 [&_td]:py-3 [&_td]:align-middle">
+        <% residents.forEach((resident) => { %>
+          <tr class="hover:bg-gray-50">
+            <td class="text-gray-500"><%= resident.id %></td>
+            <td><%= resident.firstName %></td>
+            <td><%= resident.lastName %></td>
+            <td><%= resident.address %></td>
+            <td class="whitespace-nowrap"><%= resident.contactNumber %></td>
+            <td><%= resident.email %></td>
+            <td><%- include('../partials/status-badge', { status: resident.status }) %></td>
+            <td>
+              <div class="flex gap-2 whitespace-nowrap">
+                <a class="btn btn-sm" href="/residents/<%= resident.id %>/edit">Edit</a>
+                <% if (resident.status === "Active") { %>
+                  <form method="post" action="/residents/<%= resident.id %>/deactivate">
+                    <button class="btn btn-sm" type="submit">Deactivate</button>
+                  </form>
+                <% } %>
+              </div>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+<% } %>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,31 @@
+<%- include('../partials/header', { title }) %>
+
+<p class="mb-4"><a class="text-sm text-blue-700 hover:underline" href="/residents">&larr; Back to Resident Management</a></p>
+
+<section class="panel max-w-2xl">
+  <h1 class="mb-4 text-2xl font-bold">Edit Resident</h1>
+
+  <dl class="mb-5 flex flex-wrap gap-3">
+    <div class="min-w-32 rounded-lg bg-gray-50 px-4 py-2">
+      <dt class="text-xs font-semibold uppercase text-gray-500">Resident ID</dt>
+      <dd><%= resident.id %></dd>
+    </div>
+    <div class="min-w-32 rounded-lg bg-gray-50 px-4 py-2">
+      <dt class="text-xs font-semibold uppercase text-gray-500">Status</dt>
+      <dd><%- include('../partials/status-badge', { status: resident.status }) %></dd>
+    </div>
+  </dl>
+
+  <%- include('../partials/errors', { errors }) %>
+
+  <form class="grid gap-4 sm:grid-cols-2" method="post" action="/residents/<%= resident.id %>">
+    <%- include('_fields', { values }) %>
+
+    <div class="flex gap-2 sm:col-span-2">
+      <button class="btn btn-primary" type="submit">Save Changes</button>
+      <a class="btn btn-link" href="/residents">Cancel</a>
+    </div>
+  </form>
+</section>
+
+<%- include('../partials/footer') %>
