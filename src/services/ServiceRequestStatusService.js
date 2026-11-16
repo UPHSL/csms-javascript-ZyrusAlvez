@@ -9,7 +9,7 @@ const ALLOWED_TRANSITIONS = {
 };
 
 // the only recognized Service Request statuses
-const SUPPORTED_STATUSES = new Set(Object.keys(ALLOWED_TRANSITIONS));
+export const SUPPORTED_STATUSES = new Set(Object.keys(ALLOWED_TRANSITIONS));
 
 export class ServiceRequestStatusService {
   constructor(serviceRequestRepository) {
