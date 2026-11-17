@@ -1,14 +1,28 @@
 import assert from "node:assert/strict";
-import test from "node:test";
+import test, { after } from "node:test";
 
 import request from "supertest";
 
 import { createApp } from "../src/app.js";
 import { Resident } from "../src/models/Resident.js";
+import { ResidentRepository } from "../src/repositories/ResidentRepository.js";
+import { ServiceRequestRepository } from "../src/repositories/ServiceRequestRepository.js";
 import { ResidentValidator } from "../src/services/ResidentValidator.js";
-import { makeValidResident } from "../src/utils/testUtils.js";
+import { createTemporaryDatabasePath, makeValidResident, removeDatabase } from "../src/utils/testUtils.js";
 
-const app = createApp();
+// T15: the starter routes run on a temporary database instead of the permanent
+// data/csms.db, so the suite never depends on (or touches) local development data
+const databasePath = createTemporaryDatabasePath();
+const residentRepository = new ResidentRepository(databasePath);
+const serviceRequestRepository = new ServiceRequestRepository(databasePath);
+
+const app = createApp({ residentRepository, serviceRequestRepository });
+
+after(() => {
+  residentRepository.close();
+  serviceRequestRepository.close();
+  removeDatabase(databasePath);
+});
 
 test("home page returns successfully", async () => {
   const response = await request(app).get("/");

@@ -1,14 +1,10 @@
 import { openDatabase } from "../database/connection.js";
 import { ServiceRequest } from "../models/ServiceRequest.js";
+import { escapeLikePattern } from "./sqlHelpers.js";
 
 // shared by listing and every search/filter query so all results use one order.
 // date_requested is stored as YYYY-MM-DD text, so text ordering is chronological.
 const QUERY_ORDER = "date_requested DESC, id DESC";
-
-// makes %, _ and \ in user input match literally instead of acting as LIKE wildcards
-function escapeLikePattern(value) {
-  return value.replace(/[\\%_]/g, (character) => `\\${character}`);
-}
 
 export class ServiceRequestRepository {
   // opens its own connection; omitting dbPath falls back to the default database

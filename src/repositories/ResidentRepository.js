@@ -1,5 +1,6 @@
 import { openDatabase } from "../database/connection.js";
 import { Resident } from "../models/Resident.js";
+import { escapeLikePattern } from "./sqlHelpers.js";
 
 export class ResidentRepository {
   // opens its own connection; omitting dbPath falls back to the default database
@@ -142,15 +143,16 @@ export class ResidentRepository {
           status
         FROM residents
         WHERE
-          LOWER(first_name) LIKE LOWER(?)
-          OR LOWER(last_name) LIKE LOWER(?)
+          LOWER(first_name) LIKE LOWER(?) ESCAPE '\\'
+          OR LOWER(last_name) LIKE LOWER(?) ESCAPE '\\'
         ORDER BY
           LOWER(last_name) ASC,
           LOWER(first_name) ASC,
           id ASC
       `);
 
-    const pattern = `%${searchTerm}%`;
+    // the term stays data: bound as a parameter, and % or _ typed by the user match literally
+    const pattern = `%${escapeLikePattern(searchTerm)}%`;
 
     const rows = statement.all(pattern, pattern);
 

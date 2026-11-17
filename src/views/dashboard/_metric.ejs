@@ -1,11 +1,17 @@
-<%# one summary card: the label and number are plain text; color only supplements them %>
-<% const content = `
-  <dt class="text-xs font-semibold uppercase tracking-wide ${locals.emphasis ? 'text-blue-800' : 'text-gray-500'}">${label}</dt>
-  <dd class="mt-1 text-3xl font-bold tabular-nums" data-metric="${metric}">${value}</dd>`; %>
+<%# one summary card: the label and number are plain text (escaped); color only supplements them %>
+<% const cardClass = locals.emphasis ? 'border-blue-200 bg-blue-50' : 'border-gray-200 bg-white'; %>
+<% const labelClass = locals.emphasis ? 'text-blue-800' : 'text-gray-500'; %>
 <% if (locals.href) { %>
-  <a href="<%= href %>" class="block rounded-xl border p-4 shadow-sm hover:border-blue-400 <%= locals.emphasis ? 'border-blue-200 bg-blue-50' : 'border-gray-200 bg-white' %>">
-    <div><%- content %></div>
+  <a href="<%= href %>" class="block rounded-xl border p-4 shadow-sm hover:border-blue-400 <%= cardClass %>">
+<% } else { %>
+  <div class="rounded-xl border p-4 shadow-sm <%= cardClass %>">
+<% } %>
+    <div>
+      <dt class="text-xs font-semibold uppercase tracking-wide <%= labelClass %>"><%= label %></dt>
+      <dd class="mt-1 text-3xl font-bold tabular-nums" data-metric="<%= metric %>"><%= value %></dd>
+    </div>
+<% if (locals.href) { %>
   </a>
 <% } else { %>
-  <div class="rounded-xl border p-4 shadow-sm <%= locals.emphasis ? 'border-blue-200 bg-blue-50' : 'border-gray-200 bg-white' %>"><%- content %></div>
+  </div>
 <% } %>
