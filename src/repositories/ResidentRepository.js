@@ -91,6 +91,21 @@ export class ResidentRepository {
     return result.changes > 0 ? this.findById(id) : null;
   }
 
+  // aggregate: total number of persisted Residents (Active and Inactive), counted by SQLite
+  countAll() {
+    const row = this.db.prepare("SELECT COUNT(*) AS count FROM residents").get();
+    return Number(row.count);
+  }
+
+  // aggregate: { status: count } for every status present, counted by SQLite in one query
+  countByStatus() {
+    const rows = this.db.prepare(
+      "SELECT status, COUNT(*) AS count FROM residents GROUP BY status"
+    ).all();
+
+    return Object.fromEntries(rows.map((row) => [row.status, Number(row.count)]));
+  }
+
   findAll() {
     const statement =
       this.db.prepare(`
