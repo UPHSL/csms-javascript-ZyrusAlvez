@@ -64,6 +64,32 @@ export class ServiceRequestRepository {
     return rows.map((row) => this.toServiceRequest(row));
   }
 
+  // the most recent Service Requests using the same T11 order, limited in SQL
+  findRecent(limit) {
+    const rows = this.db.prepare(
+      `SELECT * FROM service_requests
+       ORDER BY ${QUERY_ORDER}
+       LIMIT ?`
+    ).all(limit);
+
+    return rows.map((row) => this.toServiceRequest(row));
+  }
+
+  // aggregate: total number of persisted Service Requests (every status), counted by SQLite
+  countAll() {
+    const row = this.db.prepare("SELECT COUNT(*) AS count FROM service_requests").get();
+    return Number(row.count);
+  }
+
+  // aggregate: { status: count } for every status present, counted by SQLite in one query
+  countByStatus() {
+    const rows = this.db.prepare(
+      "SELECT status, COUNT(*) AS count FROM service_requests GROUP BY status"
+    ).all();
+
+    return Object.fromEntries(rows.map((row) => [row.status, Number(row.count)]));
+  }
+
   // filtering happens in SQL, not in application memory.
   // searchTerm: partial, case-insensitive match on service_type OR description.
   // status: exact match on status.

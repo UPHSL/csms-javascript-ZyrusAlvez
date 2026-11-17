@@ -3,15 +3,18 @@ import { fileURLToPath } from "node:url";
 
 import express from "express";
 
+import { createDashboardController } from "./controllers/dashboardController.js";
 import { createResidentController } from "./controllers/residentController.js";
 import { createServiceRequestController } from "./controllers/serviceRequestController.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 import { notFound } from "./middleware/notFound.js";
 import { ResidentRepository } from "./repositories/ResidentRepository.js";
 import { ServiceRequestRepository } from "./repositories/ServiceRequestRepository.js";
+import { createDashboardRoutes } from "./routes/dashboardRoutes.js";
 import mainRoutes from "./routes/index.js";
 import { createResidentRoutes } from "./routes/residentRoutes.js";
 import { createServiceRequestRoutes } from "./routes/serviceRequestRoutes.js";
+import { DashboardService } from "./services/DashboardService.js";
 import { ResidentDeactivationService } from "./services/ResidentDeactivationService.js";
 import { ResidentQueryService } from "./services/ResidentQueryService.js";
 import { ResidentRegistrationService } from "./services/ResidentRegistrationService.js";
@@ -69,7 +72,13 @@ export function createApp({
     statusService: new ServiceRequestStatusService(serviceRequestRepository)
   });
 
+  // the read-only T14 dashboard over both repositories
+  const dashboardController = createDashboardController({
+    dashboardService: new DashboardService(residentRepository, serviceRequestRepository)
+  });
+
   app.use(mainRoutes);
+  app.use(createDashboardRoutes(dashboardController));
   app.use(createResidentRoutes(residentController));
   app.use(createServiceRequestRoutes(serviceRequestController));
 

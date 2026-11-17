@@ -29,9 +29,9 @@
 <body class="min-h-screen bg-gray-100 text-gray-900 antialiased">
   <header class="bg-gray-900">
     <div class="mx-auto flex max-w-6xl items-center gap-6 px-4 py-3">
-      <a class="font-extrabold tracking-wider text-white" href="/">CSMS</a>
+      <a class="font-extrabold tracking-wider text-white" href="/dashboard">CSMS</a>
       <nav aria-label="Main" class="flex gap-1">
-        <% const navItems = [["residents", "/residents", "Residents"], ["service-requests", "/service-requests", "Service Requests"]]; %>
+        <% const navItems = [["dashboard", "/dashboard", "Dashboard"], ["residents", "/residents", "Residents"], ["service-requests", "/service-requests", "Service Requests"]]; %>
         <% navItems.forEach(([key, href, label]) => { %>
           <a href="<%= href %>"
              class="rounded-md px-3 py-1.5 text-sm <%= locals.section === key ? 'bg-gray-700 text-white' : 'text-gray-300 hover:text-white' %>"
