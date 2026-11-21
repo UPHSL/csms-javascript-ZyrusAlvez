@@ -1,7 +1,8 @@
 /**
- * Resident domain-model placeholder.
+ * Resident domain model (T01).
  *
- * Resident behavior will be introduced through a future CSMS ticket.
+ * A new Resident has no id until persisted and starts Active.
+ * Validation (T02) and persistence (T03) live in their own layers.
  */
 export class Resident {
   constructor({

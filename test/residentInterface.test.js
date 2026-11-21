@@ -5,20 +5,25 @@ import request from "supertest";
 
 import { createApp } from "../src/app.js";
 import { ResidentRepository } from "../src/repositories/ResidentRepository.js";
+import { ServiceRequestRepository } from "../src/repositories/ServiceRequestRepository.js";
 import { createTemporaryDatabasePath, removeDatabase, makeResident, saveResident } from "../src/utils/testUtils.js";
 
 // the real application wired to a ResidentRepository on a temporary SQLite file:
-// HTTP -> controller -> T04-T07 services -> T02 validation -> T03 persistence
+// HTTP -> controller -> T04-T07 services -> T02 validation -> T03 persistence.
+// T15: the Service Request repository is also passed (same temporary file) so createApp
+// never falls back to the permanent data/csms.db during tests.
 function createInterfaceSetup() {
   const databasePath = createTemporaryDatabasePath();
   const repository = new ResidentRepository(databasePath);
-  const app = createApp({ residentRepository: repository });
+  const serviceRequestRepository = new ServiceRequestRepository(databasePath);
+  const app = createApp({ residentRepository: repository, serviceRequestRepository });
 
-  return { databasePath, repository, app };
+  return { databasePath, repository, serviceRequestRepository, app };
 }
 
-function cleanupInterfaceSetup({ databasePath, repository }) {
+function cleanupInterfaceSetup({ databasePath, repository, serviceRequestRepository }) {
   repository.close();
+  serviceRequestRepository.close();
   removeDatabase(databasePath);
 }
 
