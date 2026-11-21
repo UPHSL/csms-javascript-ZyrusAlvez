@@ -1,0 +1,11 @@
+<%# named workflow actions T10 allows from the current status; each is a POST form.
+    Completed and Cancelled have none, so a terminal label is shown instead. %>
+<% if (actions.length === 0) { %>
+  <span class="text-xs italic text-gray-500">No further actions (<%= serviceRequest.status %>)</span>
+<% } else { %>
+  <% actions.forEach(({ action, label }) => { %>
+    <form method="post" action="/service-requests/<%= serviceRequest.id %>/<%= action %>">
+      <button class="btn <%= locals.small ? 'btn-sm' : '' %> <%= action === 'cancel' ? 'btn-danger-outline' : '' %>" type="submit"><%= label %></button>
+    </form>
+  <% }) %>
+<% } %>

@@ -1,0 +1,75 @@
+<%- include('../partials/header', { title, section }) %>
+
+<div class="mb-6 flex flex-wrap items-center justify-between gap-4">
+  <div>
+    <h1 class="text-2xl font-bold">CSMS Dashboard</h1>
+    <p class="text-sm text-gray-600">Current summary of persisted Residents and Service Requests.</p>
+  </div>
+  <div class="flex flex-wrap gap-2">
+    <a class="btn" href="/residents">Resident Management</a>
+    <a class="btn" href="/service-requests">Service Request Management</a>
+  </div>
+</div>
+
+<section class="mb-8" aria-labelledby="residents-heading">
+  <h2 id="residents-heading" class="mb-3 text-sm font-semibold uppercase tracking-wide text-gray-600">Residents</h2>
+  <dl class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+    <%- include('_metric', { label: 'Total Residents', metric: 'residents-total', value: residents.total, href: '/residents' }) %>
+    <%- include('_metric', { label: 'Active Residents', metric: 'residents-active', value: residents.active }) %>
+    <%- include('_metric', { label: 'Inactive Residents', metric: 'residents-inactive', value: residents.inactive }) %>
+  </dl>
+</section>
+
+<section class="mb-8" aria-labelledby="service-requests-heading">
+  <h2 id="service-requests-heading" class="mb-3 text-sm font-semibold uppercase tracking-wide text-gray-600">Service Requests</h2>
+  <dl class="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
+    <%- include('_metric', { label: 'Total Service Requests', metric: 'service-requests-total', value: serviceRequests.total, href: '/service-requests' }) %>
+    <%- include('_metric', { label: 'Open (Pending + In Progress)', metric: 'service-requests-open', value: serviceRequests.open, emphasis: true }) %>
+    <%- include('_metric', { label: 'Pending', metric: 'service-requests-pending', value: serviceRequests.pending, href: '/service-requests?status=Pending' }) %>
+    <%- include('_metric', { label: 'In Progress', metric: 'service-requests-in-progress', value: serviceRequests.inProgress, href: '/service-requests?status=In+Progress' }) %>
+    <%- include('_metric', { label: 'Completed', metric: 'service-requests-completed', value: serviceRequests.completed, href: '/service-requests?status=Completed' }) %>
+    <%- include('_metric', { label: 'Cancelled', metric: 'service-requests-cancelled', value: serviceRequests.cancelled, href: '/service-requests?status=Cancelled' }) %>
+  </dl>
+</section>
+
+<section aria-labelledby="recent-heading">
+  <div class="mb-3 flex items-center justify-between gap-4">
+    <h2 id="recent-heading" class="text-sm font-semibold uppercase tracking-wide text-gray-600">Recent Service Requests</h2>
+    <a class="text-sm text-blue-700 hover:underline" href="/service-requests">View all</a>
+  </div>
+
+  <% if (recentServiceRequests.length === 0) { %>
+    <p class="rounded-xl border border-dashed border-gray-300 bg-white px-4 py-10 text-center text-gray-500">No Service Requests available.</p>
+  <% } else { %>
+    <div class="overflow-x-auto rounded-xl border border-gray-200 bg-white shadow-sm">
+      <table class="min-w-full divide-y divide-gray-200 text-sm">
+        <thead class="bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-600">
+          <tr>
+            <th scope="col" class="px-4 py-3">ID</th>
+            <th scope="col" class="px-4 py-3">Resident ID</th>
+            <th scope="col" class="px-4 py-3">Service Type</th>
+            <th scope="col" class="px-4 py-3">Description</th>
+            <th scope="col" class="px-4 py-3">Date Requested</th>
+            <th scope="col" class="px-4 py-3">Status</th>
+            <th scope="col" class="px-4 py-3">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100 [&_td]:px-4 [&_td]:py-3 [&_td]:align-middle">
+          <% recentServiceRequests.forEach((serviceRequest) => { %>
+            <tr class="hover:bg-gray-50" data-service-request-id="<%= serviceRequest.id %>">
+              <td class="text-gray-500"><%= serviceRequest.id %></td>
+              <td><%= serviceRequest.residentId %></td>
+              <td><%= serviceRequest.serviceType %></td>
+              <td class="max-w-xs truncate" title="<%= serviceRequest.description %>"><%= serviceRequest.description %></td>
+              <td class="whitespace-nowrap"><%= serviceRequest.dateRequested %></td>
+              <td class="whitespace-nowrap"><%- include('../partials/status-badge', { status: serviceRequest.status }) %></td>
+              <td><a class="btn btn-sm" href="/service-requests/<%= serviceRequest.id %>">View</a></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  <% } %>
+</section>
+
+<%- include('../partials/footer') %>

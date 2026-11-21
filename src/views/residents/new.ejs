@@ -1,0 +1,21 @@
+<%- include('../partials/header', { title, section: 'residents' }) %>
+
+<p class="mb-4"><a class="text-sm text-blue-700 hover:underline" href="/residents">&larr; Back to Resident Management</a></p>
+
+<section class="panel max-w-2xl">
+  <h1 class="text-2xl font-bold">Register Resident</h1>
+  <p class="mb-5 mt-1 text-sm text-gray-600">New Residents are registered as <strong>Active</strong>.</p>
+
+  <%- include('../partials/errors', { errors }) %>
+
+  <form class="grid gap-4 sm:grid-cols-2" method="post" action="/residents">
+    <%- include('_fields', { values }) %>
+
+    <div class="flex gap-2 sm:col-span-2">
+      <button class="btn btn-primary" type="submit">Register Resident</button>
+      <a class="btn btn-link" href="/residents">Cancel</a>
+    </div>
+  </form>
+</section>
+
+<%- include('../partials/footer') %>

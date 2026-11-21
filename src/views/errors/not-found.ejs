@@ -1,0 +1,9 @@
+<%- include('../partials/header', { title, section: locals.section }) %>
+
+<section class="panel max-w-2xl">
+  <h1 class="text-2xl font-bold"><%= title %></h1>
+  <p class="my-4 text-gray-700"><%= message %></p>
+  <a class="btn" href="<%= locals.backHref || '/' %>"><%= locals.backLabel || 'Back to Home' %></a>
+</section>
+
+<%- include('../partials/footer') %>
