@@ -3,6 +3,7 @@ import { fileURLToPath } from "node:url";
 
 import express from "express";
 
+import { applicationConfig } from "./config/application.js";
 import { createDashboardController } from "./controllers/dashboardController.js";
 import { createResidentController } from "./controllers/residentController.js";
 import { createServiceRequestController } from "./controllers/serviceRequestController.js";
@@ -47,6 +48,10 @@ export function createApp({
 
   app.set("views", path.join(currentDirectory, "views"));
   app.set("view engine", "ejs");
+
+  // T16: release identity available to every template (used by the shared footer)
+  app.locals.applicationShortName = applicationConfig.shortName;
+  app.locals.applicationVersion = applicationConfig.version;
 
   app.use(express.json());
   app.use(express.urlencoded({ extended: false }));
